@@ -12,16 +12,39 @@ class Enemy:
         self.word_length = len(word)
         self.letter_pos = 0
         self.surface = surface
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.create_object(self.surface, self.pos_x, self.pos_y)
 
-        drawn_circle = pygame.draw.circle(surface=self.surface,
-                                          color=const.CIRCLE_COLOR,
-                                          center=(pos_x, pos_y),
-                                          radius=const.CIRCLE_RADIUS)
-        print(drawn_circle.topleft)
-        rendered_text = const.FONT.render("Test", (100, 100, 100), (0, 0, 0))
-        surface.blit(rendered_text, (90, 70))
+
+    def create_object(self, surface: pygame.Surface, pos_x: int, pos_y: int):
+        circle = pygame.draw.circle(surface=self.surface,
+                                    color=const.CIRCLE_COLOR,
+                                    center=(pos_x, pos_y),
+                                    radius=const.CIRCLE_RADIUS)
+        pos_text = circle.topleft
+
+        if self.letter_pos == 0:
+            text_unwritten = const.FONT.render(self.word, 0, const.TEXT_UWWRITTEN)
+            surface.blit(text_unwritten, (pos_text[0], pos_text[1] - 20))
+        else:
+            print(self.word[0:self.letter_pos])
+            print(self.word[self.letter_pos:self.word_length-1])
+            text_written = const.FONT.render(self.word[0:self.letter_pos], 0, const.TEXT_WRITTEN)
+            text_unwritten = const.FONT.render(self.word[self.letter_pos:self.word_length], 0, const.TEXT_UWWRITTEN)
+            pos_text_unwritten = surface.blit(text_written, (pos_text[0], pos_text[1] - 20)).topright
+            surface.blit(text_unwritten, pos_text_unwritten)
+
+
+    def update_position(self):
+        self.pos_x += 0.1
+        self.pos_y += 0.1
+        self.create_object(self.surface, self.pos_x, self.pos_y)
 
 
     def check_input(self, letter: str):
+        print(letter)
         if self.word[self.letter_pos] == letter:
             self.letter_pos += 1
+        else:
+            self.letter_pos = 0
