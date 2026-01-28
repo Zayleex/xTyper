@@ -14,6 +14,7 @@ class Enemy:
         self.surface = surface
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.alive = True
         self.create_object(self.surface, self.pos_x, self.pos_y)
 
 
@@ -43,8 +44,13 @@ class Enemy:
 
 
     def check_input(self, letter: str):
-        print(letter)
         if self.word[self.letter_pos] == letter:
             self.letter_pos += 1
         else:
             self.letter_pos = 0
+        self.check_alive()
+
+
+    def check_alive(self):
+        if self.word_length == self.letter_pos:
+            self.alive = False
